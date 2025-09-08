@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Scanner;
 
 /**
- * Question 1
+ * 
  * --- Day 1: Calorie Counting ---
  * 
  * Santa's reindeer typically eat regular reindeer food, but they need a lot of
@@ -75,11 +75,41 @@ import java.util.Scanner;
  * Find the Elf carrying the most Calories. How many total Calories is that Elf
  * carrying?
  * 
+ * Your puzzle answer was 68467.
+ * --- Part Two ---
+ * 
+ * By the time you calculate the answer to the Elves' question, they've already
+ * realized that the Elf carrying the most Calories of food might eventually run
+ * out of snacks.
+ * 
+ * To avoid this unacceptable situation, the Elves would instead like to know
+ * the total Calories carried by the top three Elves carrying the most Calories.
+ * That way, even if one of those Elves runs out of snacks, they still have two
+ * backups.
+ * 
+ * In the example above, the top three Elves are the fourth Elf (with 24000
+ * Calories), then the third Elf (with 11000 Calories), then the fifth Elf (with
+ * 10000 Calories). The sum of the Calories carried by these three elves is
+ * 45000.
+ * 
+ * Find the top three Elves carrying the most Calories. How many Calories are
+ * those Elves carrying in total?
+ * 
+ * Your puzzle answer was 203420.
+ * 
+ * Both parts of this puzzle are complete! They provide two gold stars: **
+ * 
+ * At this point, you should return to your Advent calendar and try another
+ * puzzle.
+ * 
+ * If you still want to see it, you can get your puzzle input.
+ * 
+ * You can also [Shareon Bluesky Twitter Mastodon] this puzzle.
+ * 
  */
-public class Question1 {
+public class Day01 {
     private static final String PATH_DATA = "src" + File.separator + "data" + File.separator;
     public static HashMap<String, Integer> elfs = new HashMap<String, Integer>();
-    public static Map.Entry<String, Integer> bestElf = null;
 
     public static void main(String[] args) {
         String fichier = "day01.txt";
@@ -90,7 +120,7 @@ public class Question1 {
             while (scanner.hasNextLine()) {
                 String ch = scanner.nextLine();
                 ch = ch.trim();
-                // System.out.println(":" + ch + ":");
+
                 if (ch.isEmpty()) {
                     elfs.put(localElf.getKey(), localElf.getValue());
                     localElf = new AbstractMap.SimpleEntry<>("elf" + elfs.size(), 0);
@@ -102,12 +132,19 @@ public class Question1 {
             System.err.println(fichier + " is missing ! ");
         }
 
-        for (Map.Entry<String, Integer> elf : elfs.entrySet()) {
-            if (bestElf == null || elf.getValue() > bestElf.getValue()) {
-                bestElf = elf;
-            }
-        }
+        elfs.entrySet()
+                .stream()
+                .sorted((e1, e2) -> Integer.compare(e2.getValue(), e1.getValue()))
+                .limit(3)
+                .forEachOrdered(e -> System.out.println(e.getKey() + ": " + e.getValue() + " calories"));
 
-        System.out.println("Elf with highest calories: " + bestElf.getKey() + " (" + bestElf.getValue() + " calories)");
+        int totalTop3 = elfs.entrySet()
+                .stream()
+                .sorted((e1, e2) -> Integer.compare(e2.getValue(), e1.getValue()))
+                .limit(3)
+                .mapToInt(Map.Entry::getValue)
+                .sum();
+
+        System.out.println("Total calories of top 3 elves: " + totalTop3);
     }
 }
