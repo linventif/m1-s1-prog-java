@@ -80,7 +80,7 @@ public class Question1 {
         elfs.put("elf2", 4000);
         elfs.put("elf3", 5000 + 6000);
         elfs.put("elf4", 7000 + 8000 + 9000);
-        elfs.put("elf4", 10000);
+        elfs.put("elf5", 10000);
 
         for (Map.Entry<String, Integer> elf : elfs.entrySet()) {
             if (bestElf == null || elf.getValue() > bestElf.getValue()) {
