@@ -1,7 +1,12 @@
 package com.example;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 /**
  * Question 1
@@ -72,15 +77,30 @@ import java.util.Map;
  * 
  */
 public class Question1 {
+    private static final String PATH_DATA = "src" + File.separator + "data" + File.separator;
     public static HashMap<String, Integer> elfs = new HashMap<String, Integer>();
     public static Map.Entry<String, Integer> bestElf = null;
 
     public static void main(String[] args) {
-        elfs.put("elf1", 1000 + 2000 + 3000);
-        elfs.put("elf2", 4000);
-        elfs.put("elf3", 5000 + 6000);
-        elfs.put("elf4", 7000 + 8000 + 9000);
-        elfs.put("elf5", 10000);
+        String fichier = "day01.txt";
+        try (Scanner scanner = new Scanner(new FileInputStream(PATH_DATA + fichier))) {
+            Map.Entry<String, Integer> localElf = new AbstractMap.SimpleEntry<>("elf" + elfs.size(), 0);
+
+            /*----- Lecture du fichier -----*/
+            while (scanner.hasNextLine()) {
+                String ch = scanner.nextLine();
+                ch = ch.trim();
+                // System.out.println(":" + ch + ":");
+                if (ch.isEmpty()) {
+                    elfs.put(localElf.getKey(), localElf.getValue());
+                    localElf = new AbstractMap.SimpleEntry<>("elf" + elfs.size(), 0);
+                } else {
+                    localElf.setValue(localElf.getValue() + Integer.parseInt(ch));
+                }
+            }
+        } catch (FileNotFoundException fne) {
+            System.err.println(fichier + " is missing ! ");
+        }
 
         for (Map.Entry<String, Integer> elf : elfs.entrySet()) {
             if (bestElf == null || elf.getValue() > bestElf.getValue()) {

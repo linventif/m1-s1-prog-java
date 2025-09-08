@@ -3,6 +3,13 @@
 	"configurations": [
 		{
 			"type": "java",
+			"name": "TpAdventOfCode",
+			"request": "launch",
+			"mainClass": "com.example.TpAdventOfCode",
+			"projectName": "demo"
+		},
+		{
+			"type": "java",
 			"name": "Question1",
 			"request": "launch",
 			"mainClass": "com.example.Question1",
