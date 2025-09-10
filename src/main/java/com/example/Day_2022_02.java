@@ -100,7 +100,7 @@ import java.util.Scanner;
  * You can also [Shareon Bluesky Twitter Mastodon] this puzzle.
  */
 
-public class Day02 {
+public class Day_2022_02 {
     private static final String PATH_DATA = "src" + File.separator + "data" + File.separator;
     public static int totalScore = 0;
     public static int totalScorePart2 = 0;

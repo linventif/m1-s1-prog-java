@@ -107,7 +107,7 @@ import java.util.Scanner;
  * You can also [Shareon Bluesky Twitter Mastodon] this puzzle.
  * 
  */
-public class Day01 {
+public class Day_2022_01 {
     private static final String PATH_DATA = "src" + File.separator + "data" + File.separator;
     public static HashMap<String, Integer> elfs = new HashMap<String, Integer>();
 
