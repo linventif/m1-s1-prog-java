@@ -43,11 +43,26 @@ import java.util.Scanner;
  * 
  * To what floor do the instructions take Santa?
  * 
+ * --- Part Two ---
+ * 
+ * Now, given the same instructions, find the position of the first character
+ * that causes him to enter the basement (floor -1). The first character in the
+ * instructions has position 1, the second character has position 2, and so on.
+ * 
+ * For example:
+ * 
+ * ) causes him to enter the basement at character position 1.
+ * ()()) causes him to enter the basement at character position 5.
+ * 
+ * What is the position of the character that causes Santa to first enter the
+ * basement?
+ * 
  * 
  */
 public class Day_2015_01 {
     private static final String PATH_DATA = "src" + File.separator + "data" + File.separator;
     public static int floor;
+    public static int breakPos;
 
     public static void main(String[] args) {
         String fichier = "Day_2015_01.txt";
@@ -57,12 +72,14 @@ public class Day_2015_01 {
                 ch = ch.trim();
 
                 if (!ch.isEmpty()) {
-                    for (int i = 0; i < ch.length(); i++) {
+                    for (int i = 0; i < ch.length() && floor >= 0; i++) {
+                        breakPos = i + 1;
                         if (ch.charAt(i) == '(') {
-                            floor++;
+                            floor += 1;
                         } else {
-                            floor--;
+                            floor -= 1;
                         }
+                        System.out.println(floor);
                     }
                 }
             }
@@ -70,6 +87,6 @@ public class Day_2015_01 {
             System.err.println(fichier + " is missing ! ");
         }
 
-        System.out.println("Total floor to climb: " + floor);
+        System.out.println("Total floor to climb: " + floor + " at i=" + breakPos);
     }
 }
