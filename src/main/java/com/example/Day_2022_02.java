@@ -106,7 +106,7 @@ public class Day_2022_02 {
     public static int totalScorePart2 = 0;
 
     public static void main(String[] args) {
-        String fichier = "day02.txt";
+        String fichier = "Day_2022_02.txt";
         try (Scanner scanner = new Scanner(new FileInputStream(PATH_DATA + fichier))) {
 
             /*----- Lecture du fichier -----*/

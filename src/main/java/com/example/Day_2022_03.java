@@ -126,7 +126,7 @@ public class Day_2022_03 {
     public static HashMap<Character, Integer> itemsCount = new HashMap<>();
 
     public static void main(String[] args) {
-        String fichier = "day03.txt";
+        String fichier = "Day_2022_03.txt";
         Integer entryCount = 0;
 
         try (Scanner scanner = new Scanner(new FileInputStream(PATH_DATA + fichier))) {

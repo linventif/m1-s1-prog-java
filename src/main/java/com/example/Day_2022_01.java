@@ -112,7 +112,7 @@ public class Day_2022_01 {
     public static HashMap<String, Integer> elfs = new HashMap<String, Integer>();
 
     public static void main(String[] args) {
-        String fichier = "day01.txt";
+        String fichier = "Day_2022_01.txt";
         try (Scanner scanner = new Scanner(new FileInputStream(PATH_DATA + fichier))) {
             Map.Entry<String, Integer> localElf = new AbstractMap.SimpleEntry<>("elf" + elfs.size(), 0);
 
