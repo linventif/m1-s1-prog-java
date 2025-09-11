@@ -31,12 +31,56 @@ import java.util.Scanner;
  * ^v^v^v^v^v delivers a bunch of presents to some very lucky children at only 2
  * houses.
  *
+ * --- Part Two ---
+ *
+ * The next year, to speed up the process, Santa creates a robot version of
+ * himself, Robo-Santa, to deliver presents with him.
+ *
+ * Santa and Robo-Santa start at the same location (delivering two presents to
+ * the same starting house), then take turns moving based on instructions from
+ * the elf, who is eggnoggedly reading from the same script as the previous
+ * year.
+ *
+ * This year, how many houses receive at least one present?
+ *
+ * For example:
+ *
+ * ^v delivers presents to 3 houses, because Santa goes north, and then
+ * Robo-Santa goes south.
+ * ^>v< now delivers presents to 3 houses, and Santa and Robo-Santa end up back
+ * where they started.
+ * ^v^v^v^v^v now delivers presents to 11 houses, with Santa going one direction
+ * and Robo-Santa going the other.
+ *
+ *
  *
  */
 public class Day_2015_03 {
     private static final String PATH_DATA = "src" + File.separator + "data" + File.separator;
-    public static int[][] pos = { { 0, 0 } };
+    public static int[][] posSanta = { { 0, 0 } };
+    public static int[][] posRoboSanta = { { 0, 0 } };
     public static HashMap<String, Integer> alreadyVisited = new HashMap<>();
+
+    public static int[][] increasePos(int[][] pos, int mov) {
+        if (mov == '^') {
+            pos[0][0] += 1;
+        } else if (mov == 'v') {
+            pos[0][0] -= 1;
+        } else if (mov == '<') {
+            pos[0][1] -= 1;
+        } else if (mov == '>') {
+            pos[0][1] += 1;
+        }
+
+        String key = pos[0][0] + "," + pos[0][1];
+        if (alreadyVisited.containsKey(key)) {
+            alreadyVisited.put(key, alreadyVisited.get(key) + 1);
+        } else {
+            alreadyVisited.put(key, 1);
+        }
+
+        return pos;
+    }
 
     public static void main(String[] args) {
         String fichier = "Day_2015_03.txt";
@@ -48,23 +92,12 @@ public class Day_2015_03 {
 
                 if (!ch.isEmpty()) {
                     for (int i = 0; i < ch.length(); i++) {
-                        char chr = ch.charAt(i);
-                        if (chr == '^') {
-                            pos[0][0] += 1;
-                        } else if (chr == 'v') {
-                            pos[0][0] -= 1;
-                        } else if (chr == '<') {
-                            pos[0][1] -= 1;
-                        } else if (chr == '>') {
-                            pos[0][1] += 1;
-                        }
 
-                        System.out.println("pos: " + pos[0][0] + "," + pos[0][1]);
-                        String key = pos[0][0] + "," + pos[0][1];
-                        if (alreadyVisited.containsKey(key)) {
-                            alreadyVisited.put(key, alreadyVisited.get(key) + 1);
+                        char chr = ch.charAt(i);
+                        if (i % 2 == 0) {
+                            posRoboSanta = increasePos(posRoboSanta, chr);
                         } else {
-                            alreadyVisited.put(key, 1);
+                            posSanta = increasePos(posSanta, chr);
                         }
                     }
                 }
