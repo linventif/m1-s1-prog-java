@@ -1,53 +1,115 @@
 package com.example;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.util.Scanner;
+import java.security.MessageDigest;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
+ * --- Day 4: The Ideal Stocking Stuffer ---
  *
- * --- Day 3: Perfectly Spherical Houses in a Vacuum ---
+ * Santa needs help mining some AdventCoins (very similar to bitcoins) to use as
+ * gifts for all the economically forward-thinking little girls and boys.
  *
- * Santa is delivering presents to an infinite two-dimensional grid of houses.
- *
- * He begins by delivering a present to the house at his starting location, and
- * then an elf at the North Pole calls him via radio and tells him where to move
- * next. Moves are always exactly one house to the north (^), south (v), east
- * (>), or west (<). After each move, he delivers another present to the house
- * at his new location.
- *
- * However, the elf back at the north pole has had a little too much eggnog, and
- * so his directions are a little off, and Santa ends up visiting some houses
- * more than once. How many houses receive at least one present?
+ * To do this, he needs to find MD5 hashes which, in hexadecimal, start with at
+ * least five zeroes. The input to the MD5 hash is some secret key (your puzzle
+ * input, given below) followed by a number in decimal. To mine AdventCoins, you
+ * must find Santa the lowest positive number (no leading zeroes: 1, 2, 3, ...)
+ * that produces such a hash.
  *
  * For example:
  *
- * > delivers presents to 2 houses: one at the starting location, and one to the
- * east.
- * ^>v< delivers presents to 4 houses in a square, including twice to the house
- * at his starting/ending location.
- * ^v^v^v^v^v delivers a bunch of presents to some very lucky children at only 2
- * houses.
+ * If your secret key is abcdef, the answer is 609043, because the MD5 hash of
+ * abcdef609043 starts with five zeroes (000001dbbfa...), and it is the lowest
+ * such number to do so.
+ * If your secret key is pqrstuv, the lowest number it combines with to make an
+ * MD5 hash starting with five zeroes is 1048970; that is, the MD5 hash of
+ * pqrstuv1048970 looks like 000006136ef....
  *
- *
+ * Your puzzle input is yzbqklnj.
  */
 public class Day_2015_04 {
-    private static final String PATH_DATA = "src" + File.separator + "data" + File.separator;
+    public static final String INPUT = "yzbqklnj";
+    public static final int THREAD_COUNT = Runtime.getRuntime().availableProcessors();
+    public static final int ZEROES = 10; // Number of leading zeroes to find (1 to 24)
+    // For 5 zeroes: check digest[0]==0 && digest[1]==0 && (digest[2] & 0xF0) == 0
+    // For 6 zeroes: digest[0]==0 && digest[1]==0 && digest[2]==0
+    // For 7 zeroes: digest[0]==0 && digest[1]==0 && digest[2]==0 && (digest[3] &
+    // 0xF0) == 0
+    // For 8 zeroes: digest[0]==0 && digest[1]==0 && digest[2]==0 && digest[3]==0
 
     public static void main(String[] args) {
-        String fichier = "Day_2015_04.txt";
-        try (Scanner scanner = new Scanner(new FileInputStream(PATH_DATA + fichier))) {
-            while (scanner.hasNextLine()) {
-                String ch = scanner.nextLine();
-                ch = ch.trim();
+        long startTime = System.nanoTime();
+        String key = INPUT;
+        AtomicInteger currentNumber = new AtomicInteger(0);
+        AtomicBoolean found = new AtomicBoolean(false);
+        AtomicInteger foundNumber = new AtomicInteger(-1);
 
-                if (!ch.isEmpty()) {
-                    //
+        ExecutorService executor = Executors.newFixedThreadPool(THREAD_COUNT);
+
+        for (int i = 0; i < THREAD_COUNT; i++) {
+            executor.submit(() -> {
+                try {
+                    MessageDigest md = MessageDigest.getInstance("MD5");
+                    StringBuilder sb = new StringBuilder(key);
+                    while (!found.get()) {
+                        int number = currentNumber.getAndIncrement();
+                        sb.setLength(key.length());
+                        sb.append(number);
+                        byte[] textBytes = sb.toString().getBytes();
+                        md.update(textBytes);
+                        byte[] digest = md.digest();
+                        // Check for leading zero bytes in hex
+                        boolean isValid = true;
+                        int bytes = ZEROES / 2;
+                        for (int j = 0; j < bytes; j++) {
+                            if (digest[j] != 0) {
+                                isValid = false;
+                                break;
+                            }
+                        }
+                        if (isValid && ZEROES % 2 == 1) {
+                            if ((digest[bytes] & 0xF0) != 0) {
+                                isValid = false;
+                            }
+                        }
+                        if (isValid) {
+                            if (found.compareAndSet(false, true)) {
+                                foundNumber.set(number);
+                                // Build hash string only when found
+                                StringBuilder hashSb = new StringBuilder();
+                                for (byte b : digest) {
+                                    hashSb.append(String.format("%02x", b & 0xff));
+                                }
+                                System.out.println("Found number: " + number + " with hash: " + hashSb.toString());
+                            }
+                            break;
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
+            });
+        }
+
+        executor.shutdown();
+        while (!executor.isTerminated()) {
+            try {
+                Thread.sleep(10); // Small sleep to avoid busy waiting
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
             }
-        } catch (FileNotFoundException fne) {
-            System.err.println(fichier + " is missing ! ");
+        }
+
+        long endTime = System.nanoTime();
+        double elapsedTime = (endTime - startTime) / 1_000_000_000.0;
+        System.out.println("Time taken: " + elapsedTime + " seconds");
+
+        if (found.get()) {
+            System.out.println("Lowest number: " + foundNumber.get());
+        } else {
+            System.out.println("No number found.");
         }
     }
 }
