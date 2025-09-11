@@ -82,13 +82,15 @@ public class Day_2015_02 {
                     tblRtn[2] = tbl[2] * tbl[0];
 
                     int extra = Math.min(tblRtn[0], Math.min(tblRtn[1], tblRtn[2]));
-                    int max = Math.max(tblRtn[0], Math.max(tblRtn[1], tblRtn[2]));
-                    System.out.println("" + max + ":" + "");
+                    int max = Math.max(tbl[0], Math.max(tbl[1], tbl[2]));
+                    System.out
+                            .println("max:" + max + ", " + "tbl[0]:" + tbl[0] + ", tbl[1]:" + tbl[1] + ", tbl[2]:"
+                                    + tbl[2] + "rib");
                     sqFeet += 2 * tblRtn[0] + 2 * tblRtn[1] + 2 * tblRtn[2] + extra;
 
                     // cube ribon
-                    // riFeet += (tbl[0] + tbl[1] + tbl[2] - max) * 2;
-                    riFeet += tbl[0] * tbl[1] + tbl[2];
+                    riFeet += (tbl[0] + tbl[1] + tbl[2] - max) * 2;
+                    riFeet += tbl[0] * tbl[1] * tbl[2];
                 }
             }
         } catch (FileNotFoundException fne) {
