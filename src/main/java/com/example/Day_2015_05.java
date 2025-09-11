@@ -3,14 +3,11 @@ package com.example;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.AbstractMap;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Scanner;
 
 /**
  *
- * --- Day 3: Perfectly Spherical Houses in a Vacuum ---
+ * --- Day 5: Perfectly Spherical Houses in a Vacuum ---
  *
  * Santa is delivering presents to an infinite two-dimensional grid of houses.
  *
